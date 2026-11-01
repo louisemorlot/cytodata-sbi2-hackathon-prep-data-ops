@@ -9,8 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 import zipfile
 
-GENE_FIELDS = ("gene_symbol", "target_gene", "gene_name", "target", "gene")
-GUIDE_FIELDS = ("barcode", "guide_id", "guide_sequence", "sgrna", "sgRNA", "protospacer_sequence")
+GENE_FIELDS = ("gene_symbol", "gene_symbol_0", "target_gene", "gene_name", "target", "gene")
+GUIDE_FIELDS = ("barcode", "cell_barcode_0", "guide_id", "guide_sequence", "sgrna", "sgRNA", "protospacer_sequence")
 
 
 def digest(path: Path) -> str:
@@ -76,22 +76,44 @@ def inspect_parquet(path: Path, known_genes: set[str] | None = None) -> dict:
     import pyarrow.parquet as pq
     parquet = pq.ParquetFile(path)
     names = parquet.schema.names
+    lookup = {name.lower(): name for name in names}
     result = {"format": "Parquet", "rows": parquet.metadata.num_rows,
               "columns": len(names), "row_groups": parquet.metadata.num_row_groups,
               "column_names": names}
-    lookup = {name.lower(): name for name in names}
     gene_col = next((lookup[x] for x in GENE_FIELDS if x in lookup), None)
     guide_col = next((lookup[x.lower()] for x in GUIDE_FIELDS if x.lower() in lookup), None)
     result["gene_field"] = gene_col
     result["guide_field"] = guide_col
-    if gene_col:
-        sample = parquet.read_row_group(0, columns=[gene_col]).to_pandas()[gene_col]
-        genes = normalize(sample.dropna())
-        result["sample_unique_gene_labels"] = len(genes)
-        if known_genes:
-            result["sample_gene_labels_matching_library"] = len(genes & known_genes)
+    if gene_col or guide_col:
+        columns = list(dict.fromkeys(c for c in (gene_col, guide_col, lookup.get("cell_count")) if c))
+        frame = parquet.read(columns=columns).to_pandas()
+        genes = normalize(frame[gene_col].dropna()) if gene_col else set()
+        if gene_col:
+            result["unique_gene_labels"] = len(genes)
+            if known_genes:
+                result["gene_labels_matching_library"] = len(genes & known_genes)
             if genes:
                 result["_gene_symbols"] = sorted(genes)
+        if guide_col:
+            guide_values = frame[guide_col].dropna().astype(str)
+            result["unique_guide_ids"] = int(guide_values.nunique())
+            result["duplicate_guide_id_rows"] = int(guide_values.duplicated().sum())
+            if gene_col:
+                pair = frame[[guide_col, gene_col]].dropna().drop_duplicates()
+                per_guide_targets = pair.groupby(guide_col)[gene_col].nunique()
+                result["guides_with_multiple_target_symbols"] = int((per_guide_targets > 1).sum())
+        if "cell_count" in frame:
+            counts = frame["cell_count"].dropna()
+            result["cell_count_min"] = int(counts.min()) if len(counts) else None
+            result["cell_count_median"] = float(counts.median()) if len(counts) else None
+            result["cell_count_max"] = int(counts.max()) if len(counts) else None
+            result["nonpositive_cell_count_rows"] = int((counts <= 0).sum())
+    metadata_names = {"cell_barcode_0", "gene_symbol_0", "cell_count", "cell_stage", "cell_stage_confidence"}
+    result["numeric_feature_columns"] = sum(
+        (field.name not in metadata_names) and
+        (str(field.type).startswith(("int", "uint", "float", "double")))
+        for field in parquet.schema_arrow
+    )
     return result
 
 
@@ -114,6 +136,20 @@ def guide_target_map(path: Path) -> tuple[dict[str, str], list[str]]:
     return mapping, conflicting
 
 
+def parquet_guide_target_map(path: Path) -> tuple[dict[str, str], list[str]]:
+    import pyarrow.parquet as pq
+    parquet = pq.ParquetFile(path)
+    lookup = {name.lower(): name for name in parquet.schema.names}
+    guide_field = lookup.get("cell_barcode_0")
+    target_field = lookup.get("gene_symbol_0")
+    if not guide_field or not target_field:
+        raise ValueError(f"Expected cell_barcode_0 and gene_symbol_0 in {path.name}; columns={parquet.schema.names[:12]}")
+    frame = parquet.read(columns=[guide_field, target_field]).to_pandas().dropna().astype(str)
+    grouped = frame.drop_duplicates().groupby(guide_field)[target_field].agg(lambda values: sorted(set(values)))
+    conflicting = sorted(guide for guide, targets in grouped.items() if len(targets) > 1)
+    return {guide: targets[0] for guide, targets in grouped.items()}, conflicting
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--data-dir", default="data")
@@ -128,7 +164,8 @@ def main() -> int:
               "gene_overlap": {}, "limits": [
                   "Integrity and schema checks do not validate biological correctness or prove guide-to-target assignments.",
                   "Aconcagua is HeLa; Altair and POSH are A549. Cross-dataset agreement remains exploratory.",
-                  "Aconcagua profiles are gene/perturbation aggregates and cannot be converted to guide-level profiles from the library map alone."]}
+                  "Aconcagua cell_barcode_0 values are not assumed to match guide sequence identifiers in other screens; cross-atlas comparisons use target symbols unless an explicit mapping is validated.",
+                  "The OPS Explorer aggregate H5AD profiles are gene/perturbation-level and cannot be converted to guide-level profiles from the library map alone; the separately supplied Parquet bundle contains independently processed guide-level profiles."]}
 
     library = root / "aconcagua" / "metadata" / "perturbation_library.csv"
     known_genes = set()
@@ -202,6 +239,30 @@ def main() -> int:
         for right in labels[i + 1:]:
             shared = sorted(gene_sets[left] & gene_sets[right])
             report["gene_overlap"][f"{left} vs {right}"] = {"shared_count": len(shared), "examples": shared[:50]}
+
+    acon_guide_paths = sorted((root / "aconcagua_guide_gene_features").glob("aconcagua_guide_level_*.parquet"))
+    if acon_guide_paths:
+        population_maps = {}
+        for path in acon_guide_paths:
+            population_maps[path.name], conflicts = parquet_guide_target_map(path)
+            report.setdefault("Aconcagua_guide_level_profiles", {})[path.name] = {
+                "unique_guides": len(population_maps[path.name]),
+                "guides_with_multiple_target_symbols": len(conflicts),
+            }
+        population_overlap = {}
+        labels = list(population_maps)
+        for i, left in enumerate(labels):
+            for right in labels[i + 1:]:
+                left_map, right_map = population_maps[left], population_maps[right]
+                shared = set(left_map) & set(right_map)
+                mismatches = sorted(g for g in shared if left_map[g].upper() != right_map[g].upper())
+                population_overlap[f"{left} vs {right}"] = {
+                    "shared_guide_ids": len(shared), "left_only": len(set(left_map) - set(right_map)),
+                    "right_only": len(set(right_map) - set(left_map)),
+                    "shared_guides_with_target_mismatch": len(mismatches),
+                    "mismatch_examples": mismatches[:10],
+                }
+        report["Aconcagua_guide_population_overlap"] = population_overlap
 
     phase_paths = ([Path(args.phase_reference_file).expanduser().resolve()] if args.phase_reference_file else
                    [root / "altair" / "phase_guide.h5ad", root / "altair" / "phase_guide_x_screen.h5ad"])

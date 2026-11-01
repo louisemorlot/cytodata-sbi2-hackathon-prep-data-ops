@@ -20,6 +20,33 @@ Altair uses A549 cells with inducible Cas9 and 88 screens. The library targets 1
 
 The Aconcagua perturbation library contains 20,445 records and 5,299 distinct gene symbols in the copy already inspected for this project. It includes both targeting and control guides.
 
+## Supplied Aconcagua guide/gene feature bundle
+
+This additional processed bundle is supplied in the sibling folder `aconcagua_guide_gene_features/`; no public download URL was provided. `scripts/stage_aconcagua_guide_data.py` verifies the included `MD5SUMS.txt` values and copies the six Parquet files into `<data-dir>/aconcagua_guide_gene_features/`. A staging manifest records file sizes, MD5, and SHA-256 checksums. The source includes README processing notes and checksums.
+
+| File | Rows | Columns | Size | Profile level / population |
+|---|---:|---:|---:|---|
+| `aconcagua_guide_level_all_cells.parquet` | 20,444 | 1,638 | 173,524,236 B (165.5 MiB) | Guide / all cells |
+| `aconcagua_guide_level_interphase_cells.parquet` | 20,444 | 1,638 | 173,608,922 B (165.5 MiB) | Guide / interphase |
+| `aconcagua_guide_level_mitotic_cells.parquet` | 20,406 | 1,646 | 172,071,372 B (164.1 MiB) | Guide / mitotic |
+| `aconcagua_gene_level_all_cells.parquet` | 5,299 | 1,637 | 45,393,979 B (43.3 MiB) | Gene / all cells |
+| `aconcagua_gene_level_interphase_cells.parquet` | 5,299 | 1,637 | 45,395,758 B (43.3 MiB) | Gene / interphase |
+| `aconcagua_gene_level_mitotic_cells.parquet` | 5,299 | 1,645 | 44,515,046 B (42.5 MiB) | Gene / mitotic |
+| **Total** | — | — | **654,509,313 B (624.2 MiB)** | Six Parquet files |
+
+Guide tables identify perturbations with `cell_barcode_0` and targets with `gene_symbol_0`; gene-level tables use `gene_symbol_0`. `cell_count`, `cell_stage`, and `cell_stage_confidence` are metadata, not morphology measurements. Remaining numeric columns are robust-z feature values from DAPI, tubulin, γH2AX, and phalloidin assays. The source README reports brieflow commit `2e41c7f`, 5,299 genes, 20,445 designed guides, and 250 non-targeting controls. Mitotic missing-value filtering leaves eight more features than all-cell/interphase profiles.
+
+The supplied guide bundle supports guide-level comparisons among Aconcagua's own all-cell/interphase/mitotic populations and gene-level overlap with other datasets. In the supplied tables, all-cell and interphase each have 20,444 guide barcodes; mitotic has 20,406, all shared with the other two profiles, with no shared-barcode target-symbol conflicts. The current staged Altair OPS0077 profiles share 809 target symbols with the Aconcagua tables; the notebooks recompute this from the files. Aconcagua uses barcode identifiers; do not join them directly to Altair guide sequences without a validated mapping. Cross-atlas target-symbol comparisons are possible, with the A549 versus HeLa and assay differences kept in mind. These Parquet files complement the separate OPS Explorer aggregate H5ADs; they are not derived by expanding the aggregate H5ADs.
+
+Preview and stage the files with:
+
+```bash
+python scripts/stage_aconcagua_guide_data.py --source-dir ../aconcagua_guide_gene_features --data-dir /mnt/hackathon-data --dry-run
+python scripts/stage_aconcagua_guide_data.py --source-dir ../aconcagua_guide_gene_features --data-dir /mnt/hackathon-data
+```
+
+The extra bundle is not included in the HTTP `core` / `full` downloader presets because it is currently distributed as a local source folder. Keep its source folder available to the VM operator or transfer it separately before staging.
+
 Known-size core network transfer is about **5,235,632,383 bytes (5.24 GB / 4.88 GiB)**, including `phase_guide_x_screen.h5ad`. Including the extracted Biohub_OPS0077 profiles, local storage is about **5,331,946,566 bytes (5.33 GB / 4.97 GiB)**. The 4i subset is already a member of the marker ZIP, so its extraction does not increase the download total. Exact sizes vary if source files are updated.
 
 ## Participant download selections

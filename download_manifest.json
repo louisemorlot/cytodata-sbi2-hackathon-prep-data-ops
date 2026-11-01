@@ -1,0 +1,129 @@
+{
+  "created_utc": "2026-10-30T02:41:10.694738+00:00",
+  "preset": "ops0077-4i-only",
+  "data_dir": "/Users/pqr229/Desktop/Hackathon_SBI2/sbi2-hackathon-prep-data-ops/data",
+  "raw_images_downloaded": false,
+  "aconcagua_cell_data_parquet_downloaded": false,
+  "files": [
+    {
+      "dataset": "Altair",
+      "name": "markers_guide.zip",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip",
+      "path": "altair/markers_guide.zip",
+      "size_bytes": 2037832363,
+      "sha256": "8a7257138d26c2dfec7414c17ef9f3fee27f64e6b1f7178a957ea78c24311930",
+      "expected_sha256_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "b-catenin_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=b-catenin_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/b-catenin_guide_x_screen.h5ad",
+      "size_bytes": 7107256,
+      "sha256": "f978ab023613dbbfb3871eaa06464cfe1ce4366e31067313d47b237e1b89f395",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "c-myc_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=c-myc_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/c-myc_guide_x_screen.h5ad",
+      "size_bytes": 7066886,
+      "sha256": "70db67443afc1566381cec9ef3a5c0f38613d3453514cfd079cd2d23777cfdc1",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "gh2ax_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=gh2ax_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/gh2ax_guide_x_screen.h5ad",
+      "size_bytes": 10415216,
+      "sha256": "650c7046761bdc846dd45de3faa8b2f29679b2e59771f445eed63a799dde96ce",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "nfkb_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=nfkb_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/nfkb_guide_x_screen.h5ad",
+      "size_bytes": 9991199,
+      "sha256": "f0e749288a563a74efff8115ef03acd00f08af24ebbe8aa90f5d45bbef3b3173",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "p21_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=p21_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/p21_guide_x_screen.h5ad",
+      "size_bytes": 10411939,
+      "sha256": "6827eeed24b6a102e76156b324164185e1a2611624a73e7d10f3e472a8e53891",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "p53_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=p53_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/p53_guide_x_screen.h5ad",
+      "size_bytes": 10322171,
+      "sha256": "f6670d769f43b937d80a919978819158e94073fa298410169d8cbc1a36945b8d",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "prb_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=prb_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/prb_guide_x_screen.h5ad",
+      "size_bytes": 10756664,
+      "sha256": "05c2bc308314f75431e68f1379d64384749f4563ec89c601624d2e792b6c35bb",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "ps6_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=ps6_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/ps6_guide_x_screen.h5ad",
+      "size_bytes": 10094179,
+      "sha256": "296600d82ff6b2d80475c33ce13b1768180ad2f2aada8afc3d971e87d0eb0685",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "rb_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=rb_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/rb_guide_x_screen.h5ad",
+      "size_bytes": 10081217,
+      "sha256": "0633e0a1aef4eada494146888a659061b18d1fa9a25b88770185831d45d22e24",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    },
+    {
+      "dataset": "Altair Biohub_OPS0077 4i",
+      "name": "rsp6_guide_x_screen.h5ad",
+      "source": "https://exampledata.scverse.org/sbi2-cytodata/ops/markers_guide.zip#member=rsp6_guide_x_screen.h5ad",
+      "path": "altair/ops0077_4i/rsp6_guide_x_screen.h5ad",
+      "size_bytes": 10067456,
+      "sha256": "f6c33e59713be4f207f08e3d39b8eaeb5d656618c40ee5e7d1ce5d51fb34b3d1",
+      "expected_sha256_checked": false,
+      "zip_crc_checked": true,
+      "reused": true
+    }
+  ]
+}

@@ -18,8 +18,8 @@ ACON_BASE = "https://ops-explorer-public.s3.amazonaws.com/aconcagua/aconcagua"
 ZENODO_BASE = "https://zenodo.org/api/records/17470307/files"
 USER_AGENT = "sbi2-hackathon-prep-data-ops/1.0 (+public dataset staging)"
 ALT_SHA256 = {
-    "phase_guide.h5ad": "9cf51ab18ac710e88583a2e4ccdae5e28aa367834eb28a2d983bbd81cbf9839f",
-    "phase_guide_x_screen.h5ad": "56b295abe4c57a5f2668ed369965a2ad694272232b0126c4da809bfa53386b48",
+    "phase_guide.h5ad": "8cffb86078d6ed9839821b9176c4ef744f1b9b35386b7710794e607188d7b985",
+    "phase_guide_x_screen.h5ad": "3f1ae51ff5958b62c16c539160ae0cc5f51c91b5445659cfdf1dc6142f36e976",
     "screen_map.csv": "9dbd0486fbb685403ec26eff87dc12bb06e7ac773a2a0428ad3ff3482ad3d509",
     "unexpressed_genes.csv": "7ca185b0bc4b6f4c0f50f517846e9bd783ca0f61ad19fde04ac6ea4367b16acc",
     "markers_guide.zip": "8a7257138d26c2dfec7414c17ef9f3fee27f64e6b1f7178a957ea78c24311930",
