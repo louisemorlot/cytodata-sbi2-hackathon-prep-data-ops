@@ -47,7 +47,7 @@ Cells with all three markers: 42,410. Cells that also have a reliable DNA value:
 `notebooks/13_ops0077_marker_pca_cell_cycle_clock.ipynb` builds two kinds of embeddings of the NTC cells from the p21, Rb and pRb features and checks what they capture. The results are in `reports/ops0077_cell_cycle_clock/`.
 
 - **2-D marker embedding** (read from the `..._marker_pca.h5ad` file): PCA of the log1p, standardised mean intensities of the three markers. PC1 explains 49% and PC2 28% of the variance (`embedding_variance.csv`). PC1 correlates with all three markers (Spearman about −0.6 to −0.75), so it mostly tracks overall staining intensity; there is a clear well effect (`well_association_tests.csv`).
-- **Per-cell feature-block embeddings** (`per_cell_pca_embeddings.csv`, two PCs each):
+- **Per-cell feature-block embeddings** (`per_cell_pca_embeddings.csv.gz`, two PCs each):
   - one PCA per channel (`pRb_*`, `Rb_*`, `p21_*`) from that channel's OrganelleProfiler feature block (intensity, morphology, localisation, network; 194 / 221 / 194 features);
   - for each pair (pRb–Rb, pRb–p21, Rb–p21): the two channels' blocks together (`*_channels_*`), only the pair's CellProfiler colocalisation features (`*_coloc_*`, 16 features) and both together (`*_integrated_*`);
   - features with < 80% finite values (among cells with measurements for that block) or no variation are dropped (`per_cell_feature_qc.csv`); remaining gaps are median-imputed; features are median-centred, IQR-scaled and clipped; the PCA is fit on a random sample of 12,000 cells and applied to all cells;
@@ -104,13 +104,13 @@ Script: `scripts/ops0077_cell_cycle_score_only_markers.py`. Results: `reports/op
 
 ## 5. The earlier heuristic marker proxy
 
-Script: `scripts/score_ops0077_cell_cycle_markers.py`; notebook `14_ops0077_marker_cell_cycle_score.ipynb`; results `reports/ops0077_cell_cycle_score/per_cell_marker_stage_scores.csv`, `score_summary.json`, `marker_score_pca_visualization.png`.
+Script: `scripts/score_ops0077_cell_cycle_markers.py`; notebook `14_ops0077_marker_cell_cycle_score.ipynb`; results `reports/ops0077_cell_cycle_score/per_cell_marker_stage_scores.csv.gz`, `score_summary.json`, `marker_score_pca_visualization.png`.
 
 An exploratory, hypothesis-based **G1-to-S progression proxy** from the OrganelleProfiler mean-intensity features of pRb, Rb and p21 (17,161 cells with all three). Per well it takes the percentile of `0.65 × (robust z(log1p pRb) − robust z(log1p Rb)) + 0.35 × robust z(−log1p p21)` and labels cells as G1-like, intermediate or G1/S-entry-like (and "ambiguous" when the two evidence terms disagree). Its own `score_summary.json` lists its limitations; it is not a validated phase classifier and is not circular.
 
 ## 6. Output columns
 
-`reports/ops0077_cell_cycle_score/cell_cycle_scores.csv` (one row per NTC cell):
+`reports/ops0077_cell_cycle_score/cell_cycle_scores.csv.gz` (one row per NTC cell):
 
 | column | meaning |
 |---|---|

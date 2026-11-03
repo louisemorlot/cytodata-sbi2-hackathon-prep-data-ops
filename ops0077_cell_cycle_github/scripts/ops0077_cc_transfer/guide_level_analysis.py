@@ -12,7 +12,7 @@ Questions answered
   4. Do other phenotypes (nuclear size, p21, DNA beyond 4N, off-cycle cells) rank the guides the same way?
   5. Statistical power: how large a change can a guide of n cells reveal?
 
-Inputs : reports/ops0077_cc_transfer/reference/, reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv
+Inputs : reports/ops0077_cc_transfer/reference/, reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz
 Outputs: reports/ops0077_cc_transfer/ko3_guide_analysis/ (figures g1..g6 + tables)
 
 Usage: python guide_level_analysis.py [project_root] [--scores CSV] [--reference DIR] [--out DIR] [--min-cells N] [--n-boot N] [--n-perm N]
@@ -35,7 +35,7 @@ import cc_transfer_lib as L  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("root", nargs="?", default=".")
-ap.add_argument("--scores", default="reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv")
+ap.add_argument("--scores", default="reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz")
 ap.add_argument("--reference", default="reports/ops0077_cc_transfer/reference")
 ap.add_argument("--out", default="reports/ops0077_cc_transfer/ko3_guide_analysis")
 ap.add_argument("--min-cells", type=int, default=10, help="guides with fewer scored cells are not analysed")
@@ -140,7 +140,7 @@ def heterogeneity(df, sec_col, n_perm):
 
 def main():
     ref = L.load_reference(REF_DIR / "ntc_cc_reference.json")
-    ntc = pd.read_csv(REF_DIR / "ntc_reference_scores.csv", index_col=0)
+    ntc = pd.read_csv(REF_DIR / "ntc_reference_scores.csv.gz", index_col=0)
     ko = pd.read_csv(ROOT / args.scores, index_col=0)
     ko["guide"] = ko["gene"] + "|" + ko["sgRNA"].astype(str)
     genes = [g for g in EXPECTED if g in set(ko["gene"])]

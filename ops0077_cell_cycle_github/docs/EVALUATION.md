@@ -106,17 +106,19 @@ A guide of n scored cells gives a 95% interval of about ±1.96·√(p(1−p)/n) 
 
 ## Figure and table index
 
-**`reports/ops0077_cell_cycle_clock/`** (part 1): `embedding_by_marker.png`, `embedding_by_well.png` (2-D marker embedding); `per_cell_pca_comparison.png`, `per_cell_pca_pairwise_comparison.png` (per-channel and pairwise embeddings); `per_cell_pca_embeddings.csv`, `per_cell_pca_variance.csv`, `per_cell_feature_qc.csv`, `embedding_variance.csv`, `embedding_marker_correlations.csv`, `well_association_tests.csv`, `channel_intensity_correlations.csv`, `phase_label_feature_audit.csv`, `analysis_summary.json`.
+All figures are also collected, with captions, in [`figures/`](../figures/README.md). The large per-cell tables are stored gzip-compressed (`*.csv.gz`); pandas reads them directly.
 
-**`reports/ops0077_cell_cycle_score/`** (part 2, markers + DNA): `cell_cycle_scores.csv` (all cells), `umap_overview.png` (UMAP coloured by phase and axes), `phase_planes.png` (pairs of axes coloured by phase), `marker_profiles.png` (profiles around the cycle and cell density), `score_distributions.png` (by well; fits compared), `pc_screening.csv`, `summary.json`. The heuristic marker proxy adds `per_cell_marker_stage_scores.csv`, `score_summary.json`, `marker_score_pca_visualization.png`.
+**`reports/ops0077_cell_cycle_clock/`** (part 1): `embedding_by_marker.png`, `embedding_by_well.png` (2-D marker embedding); `per_cell_pca_comparison.png`, `per_cell_pca_pairwise_comparison.png` (per-channel and pairwise embeddings); `per_cell_pca_embeddings.csv.gz`, `per_cell_pca_variance.csv`, `per_cell_feature_qc.csv`, `embedding_variance.csv`, `embedding_marker_correlations.csv`, `well_association_tests.csv`, `channel_intensity_correlations.csv`, `phase_label_feature_audit.csv`, `analysis_summary.json`.
+
+**`reports/ops0077_cell_cycle_score/`** (part 2, markers + DNA): `cell_cycle_scores.csv.gz` (all cells), `umap_overview.png` (UMAP coloured by phase and axes), `phase_planes.png` (pairs of axes coloured by phase), `marker_profiles.png` (profiles around the cycle and cell density), `score_distributions.png` (by well; fits compared), `pc_screening.csv`, `summary.json`. The heuristic marker proxy adds `per_cell_marker_stage_scores.csv.gz`, `score_summary.json`, `marker_score_pca_visualization.png`.
 
 **`reports/ops0077_cell_cycle_score_only_markers/`** (part 2, no DNA): the same file types with the suffix `_only_markers`.
 
-**`reports/ops0077_phase_predicts_cc_phase/`** (part 3): `qc_pred_vs_true.png` (predicted vs true, error histograms), `qc_error_by_phase.png` (error along the cycle and confusion of 8 phase bins), `qc_error_drivers.png` (confidence, registration distance, well, label quality, cell number), `qc_model_comparison.png` (models vs baselines), `qc_profiles_true_vs_predicted.png`, `qc_feature_groups_and_top_features.png`; tables `phase_predicted_cc_phase.csv`, `summary.json`, `error_by_*.csv`, `ablation_by_group.csv`, `feature_importance.csv`, `feature_table.csv`.
+**`reports/ops0077_phase_predicts_cc_phase/`** (part 3): `qc_pred_vs_true.png` (predicted vs true, error histograms), `qc_error_by_phase.png` (error along the cycle and confusion of 8 phase bins), `qc_error_drivers.png` (confidence, registration distance, well, label quality, cell number), `qc_model_comparison.png` (models vs baselines), `qc_profiles_true_vs_predicted.png`, `qc_feature_groups_and_top_features.png`; tables `phase_predicted_cc_phase.csv.gz`, `summary.json`, `error_by_*.csv`, `ablation_by_group.csv`, `feature_importance.csv`, `feature_table.csv`.
 
-**`reports/ops0077_cc_transfer/reference/`** (frozen NTC reference): `ntc_cc_reference.json`, `ntc_reference_scores.csv`, `ntc_profiles_by_phase.csv`, `phase_model_features.json`, `reference_summary.json` (reproduction check, model cross-validation).
+**`reports/ops0077_cc_transfer/reference/`** (frozen NTC reference): `ntc_cc_reference.json`, `ntc_reference_scores.csv.gz`, `ntc_profiles_by_phase.csv`, `phase_model_features.json`, `reference_summary.json` (reproduction check, model cross-validation).
 
-**`reports/ops0077_cc_transfer/ko3_scores/`**: `cc_phase_new_cells.csv`, `summary.json`.
+**`reports/ops0077_cc_transfer/ko3_scores/`**: `cc_phase_new_cells.csv.gz`, `summary.json`.
 
 **`reports/ops0077_cc_transfer/ko3_evaluation/`**: `fig1` phase distributions vs NTC; `fig2` sector fractions with intervals; `fig3` change vs NTC heat map; `fig4` per guide and per well; `fig5` profiles vs NTC; `fig6` distance to the NTC curve; `fig7` stain vs phase-contrast score; `fig8` comparison with the file's own gating; `fig9` DNA reference check; tables `sector_shift_vs_ntc.csv`, `sector_fractions_with_ci.csv`, `fractions_per_guide.csv`, `fractions_per_well.csv`, `coverage_by_gene.csv`, `stain_vs_phase_agreement.csv`, `dna_g1_peak_check.csv`, `crosstab_*.csv`, `evaluation_summary.json`.
 

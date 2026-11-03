@@ -25,7 +25,7 @@ from sklearn.mixture import GaussianMixture
 
 ROOT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(".")
 H5AD = ROOT / "data/altair/ops0077_4i/OPS0077_NTC_OrganelleProfiler_pRb_Rb_p21.h5ad"
-PCS = ROOT / "reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv"
+PCS = ROOT / "reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv.gz"
 OUT = ROOT / "reports/ops0077_cell_cycle_score_only_markers"
 OUT.mkdir(parents=True, exist_ok=True)
 SUF = "_only_markers"
@@ -216,7 +216,7 @@ def main():
         res.iloc[idx, res.columns.get_loc("cc_score_pc_only")] = s3
         print("PC-only vs intensity-only |rho|:", round(abs(rho_pc), 3))
     res["cc_score"] = res["cc_score_combined"].fillna(res["cc_score_intensity"])
-    res.to_csv(OUT / f"cell_cycle_scores{SUF}.csv")
+    res.to_csv(OUT / f"cell_cycle_scores{SUF}.csv.gz")
 
     plot_all(res, ok, Z, logi, keep)
     summ = dict(

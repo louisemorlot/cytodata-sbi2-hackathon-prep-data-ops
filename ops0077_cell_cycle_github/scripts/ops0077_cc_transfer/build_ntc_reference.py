@@ -3,7 +3,7 @@
 Reads the NTC data only. Writes (never overwrites the existing score / phase-prediction results):
   reports/ops0077_cc_transfer/reference/
     ntc_cc_reference.json          frozen per-well constants, closed-curve nodes, phase anchoring, sector definitions
-    ntc_reference_scores.csv       NTC cells re-scored with the frozen reference (axes, phase, sector)
+    ntc_reference_scores.csv.gz       NTC cells re-scored with the frozen reference (axes, phase, sector)
     ntc_profiles_by_phase.csv      NTC marker / DNA profiles along the phase (for comparison with other cells)
     phase_ridge_model.joblib       ridge circular regression: phase-contrast features -> (sin, cos) of the NTC phase
     phase_model_features.json      names of the phase features the model expects
@@ -38,7 +38,7 @@ ROOT = Path(args.root)
 NTC_4I = ROOT / "data/altair/ops0077_4i/OPS0077_NTC_OrganelleProfiler_pRb_Rb_p21.h5ad"
 NTC_DAPI = ROOT / "data/altair/OPS0077_NTC_DAPI_cpmeasure.h5ad"
 NTC_PHASE = ROOT / "data/altair/OPS0077_NTC_phase_OrganelleProfiler.h5ad"
-EXISTING = ROOT / "reports/ops0077_cell_cycle_score/cell_cycle_scores.csv"
+EXISTING = ROOT / "reports/ops0077_cell_cycle_score/cell_cycle_scores.csv.gz"
 OUT = ROOT / "reports/ops0077_cc_transfer/reference"
 OUT.mkdir(parents=True, exist_ok=True)
 RNG = np.random.default_rng(0)
@@ -123,7 +123,7 @@ def main():
     sc["cc_phase_stain"], sc["cc_curve_dist"] = np.nan, np.nan
     sc.loc[ok, "cc_phase_stain"], sc.loc[ok, "cc_curve_dist"] = phase, dist
     sc["sector"] = L.sector_of(sc["cc_phase_stain"].values, ref)
-    sc.to_csv(OUT / "ntc_reference_scores.csv")
+    sc.to_csv(OUT / "ntc_reference_scores.csv.gz")
     b = pd.cut(sc["cc_phase_stain"], np.linspace(0, 1, 31), include_lowest=True)
     prof = sc.groupby(b, observed=True)[["z_dna", "z_phos", "z_p21", "z_pRb", "dna_rel"]].agg(["median", lambda x: x.quantile(.25), lambda x: x.quantile(.75)])
     prof.columns = [f"{a}_{ {'median': 'q50', '<lambda_0>': 'q25', '<lambda_1>': 'q75'}[c] }" for a, c in prof.columns]

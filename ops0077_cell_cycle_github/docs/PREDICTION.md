@@ -46,7 +46,7 @@ Only features present in at least 95% of cells are used (1,524 in total). The Ce
 - *context only*: registration distance and number of cells per tile (gradient boosting);
 - a random guess (mean circular error 0.25 turns).
 
-Predictions for labelled cells in `phase_predicted_cc_phase.csv` are the out-of-fold values; cells without a label get the value of a model trained on all labelled cells (`pred_is_out_of_fold` says which).
+Predictions for labelled cells in `phase_predicted_cc_phase.csv.gz` are the out-of-fold values; cells without a label get the value of a model trained on all labelled cells (`pred_is_out_of_fold` says which).
 
 ## Part 4: transfer to new cells (the gene knockouts)
 
@@ -98,7 +98,7 @@ The phase-contrast model is a scikit-learn pipeline saved with `joblib` (`phase_
 
 ## Output columns
 
-`reports/ops0077_phase_predicts_cc_phase/phase_predicted_cc_phase.csv` (NTC):
+`reports/ops0077_phase_predicts_cc_phase/phase_predicted_cc_phase.csv.gz` (NTC):
 
 | column | meaning |
 |---|---|
@@ -109,4 +109,4 @@ The phase-contrast model is a scikit-learn pipeline saved with `joblib` (`phase_
 | `error_turns` | signed circular error |
 | `pred_*_ridge`, `pred_*_hgb_pca` | per-model predictions |
 
-`reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv` (knockout cells): `cc_phase_stain`, `cc_phase_phase`, `cc_phase`, `cc_phase_source`, `sector_stain`, `sector_phase`, `sector_final`, `cc_curve_dist`, `out_of_ntc_support`, `phase_confidence`, the normalised axes `z_*`, the carried metadata (`gene`, `sgRNA`, `well`, ...) and the `ref_*` comparison columns.
+`reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz` (knockout cells): `cc_phase_stain`, `cc_phase_phase`, `cc_phase`, `cc_phase_source`, `sector_stain`, `sector_phase`, `sector_final`, `cc_curve_dist`, `out_of_ntc_support`, `phase_confidence`, the normalised axes `z_*`, the carried metadata (`gene`, `sgRNA`, `well`, ...) and the `ref_*` comparison columns.

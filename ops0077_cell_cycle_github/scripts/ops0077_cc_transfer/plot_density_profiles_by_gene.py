@@ -6,7 +6,7 @@ Per panel (NTC and each knockout gene):
 
 Two versions: the stain score (4i markers + DNA, frozen NTC curve) and the phase-contrast score (all cells).
 
-Inputs : reports/ops0077_cc_transfer/reference/, reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv
+Inputs : reports/ops0077_cc_transfer/reference/, reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz
 Outputs: reports/ops0077_cc_transfer/ko3_density_profiles/
 
 Usage: python plot_density_profiles_by_gene.py [project_root] [--scores CSV] [--reference DIR] [--out DIR]
@@ -27,7 +27,7 @@ import cc_transfer_lib as L  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("root", nargs="?", default=".")
-ap.add_argument("--scores", default="reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv")
+ap.add_argument("--scores", default="reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz")
 ap.add_argument("--reference", default="reports/ops0077_cc_transfer/reference")
 ap.add_argument("--out", default="reports/ops0077_cc_transfer/ko3_density_profiles")
 args = ap.parse_args()
@@ -77,7 +77,7 @@ def density(ax, ph, ref_ph, ref, bins, color, title, n):
 
 def main():
     ref = L.load_reference(ROOT / args.reference / "ntc_cc_reference.json")
-    ntc = pd.read_csv(ROOT / args.reference / "ntc_reference_scores.csv", index_col=0)
+    ntc = pd.read_csv(ROOT / args.reference / "ntc_reference_scores.csv.gz", index_col=0)
     ko = pd.read_csv(ROOT / args.scores, index_col=0)
     genes = [g for g in GENES if g in set(ko["gene"])]
     ntc_ph = ntc["cc_phase_stain"].values

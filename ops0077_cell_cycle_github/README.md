@@ -22,6 +22,7 @@ The cell cycle is circular (the end of mitosis is the start of G1), so the score
 | [docs/SCORE_CALCULATION.md](docs/SCORE_CALCULATION.md) | how the PCA embeddings and the cell cycle scores are calculated |
 | [docs/PREDICTION.md](docs/PREDICTION.md) | how the phase-contrast model is built and how the NTC score is transferred to new cells |
 | [docs/EVALUATION.md](docs/EVALUATION.md) | how every result is checked, what the QC figures show, and the main findings and caveats |
+| [figures/README.md](figures/README.md) | every figure, with a caption of what it shows |
 | [data/README.md](data/README.md) | which input files are needed (they are **not** in this repository) and where they go |
 
 ## Repository layout
@@ -33,8 +34,10 @@ scripts/                          analysis code (run from the repository root)
   score_ops0077_cell_cycle_markers.py     part 2: earlier heuristic G1-to-S marker proxy
   ops0077_phase_predict_cc_phase.py       part 3: phase contrast -> cc_phase, circular regression
   ops0077_cc_transfer/                    part 4: freeze the NTC score, apply it to new cells, evaluate
+  collect_figures.py                      copies every figure from reports/ into figures/
 notebooks/                        runner notebooks (re-run an analysis) and exploration notebooks
 reports/                          results of every analysis (tables and figures), one folder per part
+figures/                          all figures in one place, grouped by part, with captions (figures/README.md)
 docs/                             the explanations (see above)
 data/                             placeholder only; put the input .h5ad files here (never committed)
 ```
@@ -45,10 +48,30 @@ data/                             placeholder only; put the input .h5ad files he
 |---|---|---|---|
 | 1. PCA embeddings | in the notebook | `13_ops0077_marker_pca_cell_cycle_clock` | `reports/ops0077_cell_cycle_clock/` |
 | 2. Score: markers only, open-ended | `scripts/ops0077_cell_cycle_score_only_markers.py` | | `reports/ops0077_cell_cycle_score_only_markers/` |
-| 2. Score: heuristic marker proxy | `scripts/score_ops0077_cell_cycle_markers.py` | `14_ops0077_marker_cell_cycle_score` | `reports/ops0077_cell_cycle_score/` (`per_cell_marker_stage_scores.csv`, `score_summary.json`, `marker_score_pca_visualization.png`) |
+| 2. Score: heuristic marker proxy | `scripts/score_ops0077_cell_cycle_markers.py` | `14_ops0077_marker_cell_cycle_score` | `reports/ops0077_cell_cycle_score/` (`per_cell_marker_stage_scores.csv.gz`, `score_summary.json`, `marker_score_pca_visualization.png`) |
 | 2. Score: markers + DNA, circular | `scripts/ops0077_cell_cycle_score.py` | `15_run_...` (run), `14_ops0077_cell_cycle_score_exploration` (explore) | `reports/ops0077_cell_cycle_score/` (the other files) |
 | 3. Phase-contrast prediction (NTC) | `scripts/ops0077_phase_predict_cc_phase.py` | `16_run_...` (run), `17_ops0077_phase_prediction_exploration` (explore) | `reports/ops0077_phase_predicts_cc_phase/` |
 | 4. Knockout cells | `scripts/ops0077_cc_transfer/` | `18_...` (freeze reference), `19_...` (score new cells), `20_...` (evaluate), `21_...` (guides and density) | `reports/ops0077_cc_transfer/` |
+
+### Figures
+
+All 36 figures are in [figures/](figures/README.md), grouped by part and captioned. They are copies of the figures in `reports/` (the notebooks read them there); `python scripts/collect_figures.py .` refreshes the copies.
+
+### Compressed result tables
+
+The large per-cell tables are stored **gzip-compressed** (`*.csv.gz`) to keep the repository small (these tables went from 70 MB to 27 MB). The scripts read and write them directly and pandas does it transparently from the file extension, for example `pd.read_csv("reports/ops0077_cell_cycle_score/cell_cycle_scores.csv.gz", index_col=0)`. No extra step is needed. The tables are:
+
+| table | content | read by (inputs of) |
+|---|---|---|
+| `reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv.gz` (4 MB) | per-cell PCs of the channel and channel-pair feature blocks | **scoring**: both score scripts (optional PC layer) |
+| `reports/ops0077_cell_cycle_score/cell_cycle_scores.csv.gz` (6 MB) | the NTC cell cycle phase of every cell (markers + DNA) | **prediction**: `ops0077_phase_predict_cc_phase.py` (the label) and `build_ntc_reference.py` (reproduction check); notebooks 14, 17, 18 |
+| `reports/ops0077_cc_transfer/reference/ntc_reference_scores.csv.gz` (3 MB) | NTC cells re-scored with the frozen reference | evaluation scripts and notebooks 20, 21 |
+| `reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz` (0.2 MB) | scores of the 1,603 knockout cells | evaluation scripts and notebooks 20, 21 |
+| `reports/ops0077_phase_predicts_cc_phase/phase_predicted_cc_phase.csv.gz` (6 MB) | out-of-fold phase-contrast predictions (NTC) | notebook 17 |
+| `reports/ops0077_cell_cycle_score_only_markers/cell_cycle_scores_only_markers.csv.gz` (5 MB) | open-ended markers-only score | results |
+| `reports/ops0077_cell_cycle_score/per_cell_marker_stage_scores.csv.gz` (3 MB) | heuristic marker proxy | results |
+
+The smaller tables (QC summaries, tests, per-guide tables) stay as plain CSV.
 
 ## How to run
 

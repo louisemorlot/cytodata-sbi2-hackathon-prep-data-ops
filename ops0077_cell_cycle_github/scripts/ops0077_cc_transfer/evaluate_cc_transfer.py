@@ -5,7 +5,7 @@ apply_cc_transfer.py) with the NTC cells, using the phase sectors defined from t
 Expectation from the experiment design (stated by the user): CCNB1 -> G1, MCM3 -> S, CENPC -> G2/M. These are drawn on the
 figures but nothing is tuned to them and there is no pass/fail: effect sizes come with bootstrap intervals.
 
-Inputs : reports/ops0077_cc_transfer/reference/, reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv
+Inputs : reports/ops0077_cc_transfer/reference/, reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz
 Outputs: reports/ops0077_cc_transfer/ko3_evaluation/ (figures + tables)
 
 Usage: python evaluate_cc_transfer.py [project_root] [--scores CSV] [--reference DIR] [--out DIR] [--n-boot N] [--n-perm N]
@@ -28,7 +28,7 @@ import cc_transfer_lib as L  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("root", nargs="?", default=".")
-ap.add_argument("--scores", default="reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv")
+ap.add_argument("--scores", default="reports/ops0077_cc_transfer/ko3_scores/cc_phase_new_cells.csv.gz")
 ap.add_argument("--reference", default="reports/ops0077_cc_transfer/reference")
 ap.add_argument("--out", default="reports/ops0077_cc_transfer/ko3_evaluation")
 ap.add_argument("--n-boot", type=int, default=2000)
@@ -92,7 +92,7 @@ def sector_shading(ax, ref, polar=False, alpha=.07):
 
 def main():
     ref = L.load_reference(REF_DIR / "ntc_cc_reference.json")
-    ntc = pd.read_csv(REF_DIR / "ntc_reference_scores.csv", index_col=0)
+    ntc = pd.read_csv(REF_DIR / "ntc_reference_scores.csv.gz", index_col=0)
     prof = pd.read_csv(REF_DIR / "ntc_profiles_by_phase.csv")
     ko = pd.read_csv(ROOT / args.scores, index_col=0)
     genes = [g for g in EXPECTED if g in set(ko["gene"])] + [g for g in sorted(set(ko["gene"])) if g not in EXPECTED]

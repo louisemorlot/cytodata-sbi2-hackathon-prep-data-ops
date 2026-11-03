@@ -11,7 +11,7 @@ Input h5ad (same layout as OPS0077_KO3_CCNB1_MCM3_CENPC_Multimodal_4i_Phase_DNA.
 Existing derived columns of the input (cycle_stage, phase_predicted_*) are only carried as ref_* for comparison.
 
 Outputs in --out (default reports/ops0077_cc_transfer/ko3_scores/):
-  cc_phase_new_cells.csv   per cell: cc_phase_stain, cc_phase_phase, cc_phase (final), QC flags, sectors, ref_* columns
+  cc_phase_new_cells.csv.gz   per cell: cc_phase_stain, cc_phase_phase, cc_phase (final), QC flags, sectors, ref_* columns
   <input name>_cc_phase.h5ad   copy of the input with these columns added to obs (input untouched)
   summary.json
 
@@ -102,7 +102,7 @@ def main():
     for c in REF_COLS:
         if c in a.obs:
             out[f"ref_{c}"] = a.obs[c].values
-    out.to_csv(OUT / "cc_phase_new_cells.csv")
+    out.to_csv(OUT / "cc_phase_new_cells.csv.gz")
 
     # ---- copy of the input with the new columns
     add = out[[c for c in out.columns if c.startswith(("cc_", "sector_", "phase_conf")) or c in ("out_of_ntc_support",)]].copy()

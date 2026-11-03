@@ -44,7 +44,7 @@ args = ap.parse_args()
 
 ROOT = Path(args.root)
 PHASE = ROOT / "data/altair/OPS0077_NTC_phase_OrganelleProfiler.h5ad"
-SCORES = ROOT / "reports/ops0077_cell_cycle_score/cell_cycle_scores.csv"
+SCORES = ROOT / "reports/ops0077_cell_cycle_score/cell_cycle_scores.csv.gz"
 OUT = ROOT / "reports/ops0077_phase_predicts_cc_phase"
 OUT.mkdir(parents=True, exist_ok=True)
 RNG = np.random.default_rng(0)
@@ -223,7 +223,7 @@ def main():
     out = obs[["well", "tile_pheno", "pheno_to_fixed_distance_px", "cells_in_tile", "cc_phase", "cc_phase_source", "cc_curve_dist_dna",
                "z_dna", "z_p21", "z_phos", "z_pRb"]].join(pred)
     out["error_turns"] = circ_diff(out["pred_phase"], out["cc_phase"])
-    out.to_csv(OUT / "phase_predicted_cc_phase.csv")
+    out.to_csv(OUT / "phase_predicted_cc_phase.csv.gz")
 
     # ---- feature importance: univariate circular association + ridge coefficients on quantile-normalised features
     rid = ridge_model().fit(XL, Y)

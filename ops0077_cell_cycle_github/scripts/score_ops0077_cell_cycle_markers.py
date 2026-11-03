@@ -116,7 +116,7 @@ def main() -> None:
     output = obs[[column for column in ("well_canonical", "well", "tile_pheno", "sgRNA", "gene_name", "control_type") if column in obs]].copy()
     output.insert(0, "cell_id", obs.index.astype(str))
     output = output.join(scores)
-    output.to_csv(args.outdir / "per_cell_marker_stage_scores.csv", index=False)
+    output.to_csv(args.outdir / "per_cell_marker_stage_scores.csv.gz", index=False)
 
     summary = {
         "input": str(args.input),

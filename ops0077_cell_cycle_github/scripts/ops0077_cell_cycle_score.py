@@ -1,7 +1,7 @@
 """Circular cell-cycle phase score for OPS0077 NTC cells.
 
 Inputs per cell: nuclear p21 / Rb / pRb intensities (4i), relative DNA content (DAPI cpmeasure),
-optionally per-channel / pairwise PCs (reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv; skipped if absent).
+optionally per-channel / pairwise PCs (reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv.gz; skipped if absent).
 
 Stages
   1. markers   : closed principal curve through [phos fraction, p21, pRb]          (QC only, weak without DNA)
@@ -29,7 +29,7 @@ from scipy.stats import kruskal, spearmanr
 ROOT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(".")
 H5AD = ROOT / "data/altair/ops0077_4i/OPS0077_NTC_OrganelleProfiler_pRb_Rb_p21.h5ad"
 DAPI = ROOT / "data/altair/OPS0077_NTC_DAPI_cpmeasure.h5ad"
-PCS = ROOT / "reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv"
+PCS = ROOT / "reports/ops0077_cell_cycle_clock/per_cell_pca_embeddings.csv.gz"
 OUT = ROOT / "reports/ops0077_cell_cycle_score"
 OUT.mkdir(parents=True, exist_ok=True)
 RNG = np.random.default_rng(0)
@@ -285,7 +285,7 @@ def main():
         res.loc[miss, "cc_phase"] = res.loc[miss, col]
         res.loc[miss, "cc_phase_source"] = name
     res["cc_phase_angle_rad"] = 2 * np.pi * res["cc_phase"]
-    res.to_csv(OUT / "cell_cycle_scores.csv")
+    res.to_csv(OUT / "cell_cycle_scores.csv.gz")
     print(res["cc_phase_source"].value_counts().to_dict())
 
     plot_all(res, z, logi, ok_dna)
