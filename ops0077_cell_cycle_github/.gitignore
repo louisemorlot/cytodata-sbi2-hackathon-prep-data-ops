@@ -1,0 +1,17 @@
+# Large input data are never committed (see data/README.md)
+*.h5ad
+*.h5
+*.zarr/
+
+# Pickled models: create them with notebooks/18_build_ops0077_ntc_cc_phase_reference.ipynb
+*.joblib
+*.pkl
+*.pickle
+
+# Python / Jupyter / OS
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.DS_Store
